@@ -1,0 +1,215 @@
+:root {
+    --color-bg-start: #004d40;
+    --color-bg-end: #00796b;
+    --color-text-light: #e0f2f1;
+    --color-container-bg: rgba(0, 0, 0, 0.2);
+    --color-column-bg: rgba(0, 0, 0, 0.25);
+    
+    --color-materia-bloqueada-bg: #37474F;
+    --color-materia-pendiente-bg: #006064;
+    --color-materia-pendiente-text: #ffffff;
+    --color-materia-regular-bg: #FF8F00;
+    --color-materia-aprobada-bg: #2E7D32;
+    --color-materia-hover: rgba(0, 0, 0, 0.15);
+    
+    --font-primary: 'Roboto', sans-serif;
+    --font-headings: 'Bebas Neue', cursive;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-primary);
+    background-image: linear-gradient(to top right, var(--color-bg-start), var(--color-bg-end));
+    color: var(--color-text-light);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 0.5rem;
+}
+
+.main-container {
+    width: 100%;
+    max-width: 1300px; 
+    background: var(--color-container-bg);
+    border-radius: 15px;
+    padding: 1rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
+}
+
+h1 {
+    font-family: var(--font-primary);
+    font-weight: 700;
+    font-size: 3.2rem;
+    text-align: center;
+    letter-spacing: 1px;
+    margin-bottom: 0.75rem;
+    color: #ffffff;
+}
+
+#estadisticas {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 0.5rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+#plan-de-estudios {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: min-content; 
+    gap: 0.75rem;
+}
+
+.ciclo-column {
+    background: var(--color-column-bg);
+    border-radius: 10px;
+    padding: 0.6rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+}
+
+#col-cbc { grid-area: 1 / 1; }
+#col-biomedico1 { grid-area: 1 / 2; } 
+#col-biomedico2 { grid-area: 1 / 3; }
+#col-ciclo_clinico { grid-area: 1 / 4; }
+
+#col-clinicas { grid-area: 2 / 1; }
+#col-quirurgicas { grid-area: 2 / 2; }
+#col-pfo { grid-area: 2 / 3; }
+#col-rotaciones { grid-area: 2 / 4; }
+
+.ciclo-column h2 {
+    font-family: var(--font-headings);
+    font-size: 1.2rem;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.materias-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+/* CORREGIDO: Contenedor de rotaciones con 2 columnas internas */
+.rotaciones-container {
+    column-count: 2;
+    column-gap: 0.4rem;
+}
+
+.materia-card {
+    border-radius: 4px;
+    padding: 0.4rem 0.6rem;
+    font-weight: bold;
+    font-size: 0.75rem;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-image: linear-gradient(rgba(0,0,0,0), var(--color-materia-hover));
+    background-size: 100% 200%;
+    background-position: 0 0;
+    transition: background-position 0.3s ease;
+    -webkit-column-break-inside: avoid;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    margin-bottom: 0.3rem; 
+}
+
+.materia-card.placeholder {
+    background: transparent;
+    box-shadow: none;
+    cursor: default;
+}
+
+.materia-card.pendiente:hover, .materia-card.regular:hover, .materia-card.aprobada:hover {
+    background-position: 0 100%;
+}
+
+.materia-nota {
+    font-size: 0.7rem;
+    background-color: rgba(0,0,0,0.4);
+    color: white;
+    padding: 1px 5px;
+    border-radius: 4px;
+    margin-left: 6px;
+}
+
+.materia-card.bloqueada {
+    background-color: var(--color-materia-bloqueada-bg);
+}
+
+.materia-card.pendiente {
+    background-color: var(--color-materia-pendiente-bg);
+    color: var(--color-materia-pendiente-text);
+}
+
+.materia-card.regular {
+    background-color: var(--color-materia-regular-bg);
+    color: white;
+}
+
+.materia-card.aprobada {
+    background-color: var(--color-materia-aprobada-bg);
+    color: white;
+}
+
+.tooltip {
+    position: relative;
+}
+
+.tooltip .tooltip-text {
+    visibility: hidden;
+    opacity: 0;
+    width: 220px;
+    background-color: #212121;
+    color: #fff;
+    text-align: left;
+    border-radius: 6px;
+    padding: 8px;
+    position: absolute;
+    z-index: 10;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -110px;
+    transition: opacity 0.3s;
+    pointer-events: none;
+}
+
+.tooltip .tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #212121 transparent transparent transparent;
+}
+
+.materia-card.bloqueada:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+.tooltip-text ul {
+    list-style-position: inside;
+    padding-left: 5px;
+    margin: 0;
+}
