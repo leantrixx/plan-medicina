@@ -26,12 +26,16 @@ body {
     font-family: var(--font-primary);
     background-image: linear-gradient(to top right, var(--color-bg-start), var(--color-bg-end));
     color: var(--color-text-light);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 0.5rem;
 }
 
 .main-container {
     width: 100%;
     max-width: 1300px; 
-    margin: 1rem auto;
     background: var(--color-container-bg);
     border-radius: 15px;
     padding: 1rem;
@@ -42,7 +46,7 @@ body {
 h1 {
     font-family: var(--font-primary);
     font-weight: 700;
-    font-size: 2.5rem;
+    font-size: 3.2rem;
     text-align: center;
     letter-spacing: 1px;
     margin-bottom: 0.75rem;
@@ -53,122 +57,127 @@ h1 {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 1rem;
+    gap: 1.5rem;
     padding: 0.5rem;
     background: rgba(0, 0, 0, 0.2);
     border-radius: 8px;
     margin-bottom: 1rem;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
 }
 
-/* --- ESTILOS POR DEFECTO (PARA CELULARES) --- */
+/* --- ESTILOS PARA PC (EL DISEÑO QUE TE GUSTA) --- */
 #plan-de-estudios {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: min-content; 
+    gap: 0.75rem;
 }
 
 .ciclo-column {
     background: var(--color-column-bg);
     border-radius: 10px;
-    padding: 0.8rem;
+    padding: 0.6rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
 }
+
+#col-cbc { grid-area: 1 / 1; }
+#col-biomedico1 { grid-area: 1 / 2; } 
+#col-biomedico2 { grid-area: 1 / 3; }
+#col-ciclo_clinico { grid-area: 1 / 4; }
+
+#col-clinicas { grid-area: 2 / 1; }
+#col-quirurgicas { grid-area: 2 / 2; }
+#col-pfo { grid-area: 2 / 3; }
+#col-rotaciones { grid-area: 2 / 4; }
 
 .ciclo-column h2 {
     font-family: var(--font-headings);
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     text-align: center;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
     text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-/* CORREGIDO: .materias-container es flexbox, .rotaciones-container NO. */
 .materias-container {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.3rem;
+}
+
+.rotaciones-container {
+    column-count: 2;
+    column-gap: 0.4rem;
 }
 
 .materia-card {
-    border-radius: 5px;
-    padding: 0.7rem 0.9rem;
+    border-radius: 4px;
+    padding: 0.4rem 0.6rem;
     font-weight: bold;
-    font-size: 0.9rem;
+    font-size: 0.75rem;
     cursor: pointer;
     position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background-image: linear-gradient(rgba(0,0,0,0), var(--color-materia-hover));
+    background-size: 100% 200%;
+    background-position: 0 0;
+    transition: background-position 0.3s ease;
     -webkit-column-break-inside: avoid;
     page-break-inside: avoid;
     break-inside: avoid;
-    margin-bottom: 0.5rem; 
+    margin-bottom: 0.3rem; 
 }
 
-/* --- ESTILOS PARA PANTALLAS GRANDES (DESKTOP) --- */
-@media (min-width: 1024px) {
+/* --- ESTILOS QUE SE ACTIVAN SOLO EN PANTALLAS CHICAS (CELULARES) --- */
+@media (max-width: 1024px) {
     body {
-        display: flex;
-        align-items: center;
-        min-height: 100vh;
+        align-items: flex-start; /* Permite scroll vertical */
     }
 
     h1 {
-        font-size: 3.2rem;
+        font-size: 2.2rem;
     }
 
-    #estadisticas {
-        gap: 1.5rem;
-        font-size: 1rem;
-    }
-    
+    /* Se vuelve a una sola columna */
     #plan-de-estudios {
-        grid-template-columns: repeat(4, 1fr);
-        grid-auto-rows: min-content; 
+        grid-template-columns: 1fr;
     }
 
-    #col-cbc { grid-area: 1 / 1; }
-    #col-biomedico1 { grid-area: 1 / 2; } 
-    #col-biomedico2 { grid-area: 1 / 3; }
-    #col-ciclo_clinico { grid-area: 1 / 4; }
-    #col-clinicas { grid-area: 2 / 1; }
-    #col-quirurgicas { grid-area: 2 / 2; }
-    #col-pfo { grid-area: 2 / 3; }
-    #col-rotaciones { grid-area: 2 / 4; }
+    /* Se resetea la posición de cada columna para que se apilen naturalmente */
+    .ciclo-column {
+        grid-area: auto !important;
+    }
 
-    /* CORREGIDO: Se aplica el column-count solo para desktop */
-    .rotaciones-container {
-        column-count: 2;
-        column-gap: 0.5rem;
+    .materias-container, .rotaciones-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        column-count: 1; /* Rotaciones en una sola columna para leer mejor */
     }
 
     .materia-card {
-        padding: 0.5rem 0.7rem;
-        font-size: 0.8rem;
-        background-image: linear-gradient(rgba(0,0,0,0), var(--color-materia-hover));
-        background-size: 100% 200%;
-        background-position: 0 0;
-        transition: background-position 0.3s ease;
-    }
-    
-    .ciclo-column h2 {
-        font-size: 1.2rem;
-    }
-
-    .materia-card.placeholder {
-        background: transparent;
-        box-shadow: none;
-        cursor: default;
+        font-size: 0.9rem; /* Letra más grande para leer en celu */
+        padding: 0.7rem;
     }
 }
 
+
+.materia-card.placeholder {
+    background: transparent;
+    box-shadow: none;
+    cursor: default;
+}
 
 .materia-card.pendiente:hover, .materia-card.regular:hover, .materia-card.aprobada:hover {
     background-position: 0 100%;
 }
 
 .materia-nota {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     background-color: rgba(0,0,0,0.4);
     color: white;
     padding: 1px 5px;
