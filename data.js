@@ -17,7 +17,6 @@ const planDeEstudios = [
         materias: [
             { id: "anatomia", nombre: "Anatomía (A)", correlativas_cursar: [{materia: "cbc", tipo: "aprobada"}] },
             { id: "histo_bloque", nombre: "Histología - Biología Celular - Embriología - Genética (A)", correlativas_cursar: [{materia: "cbc", tipo: "aprobada"}] },
-            // CORREGIDO: Se añade el requisito del CBC a las materias libres
             { id: "salud_mental", nombre: "Salud Mental (A)", correlativas_cursar: [{materia: "cbc", tipo: "aprobada"}] },
             { id: "salud_publica", nombre: "Salud Pública (C)", correlativas_cursar: [{materia: "cbc", tipo: "aprobada"}] },
             { id: "bioetica", nombre: "Bioética (C)", correlativas_cursar: [{materia: "cbc", tipo: "aprobada"}] },
