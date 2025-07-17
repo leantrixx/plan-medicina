@@ -129,84 +129,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const aprobadas = todas.filter(m => m.estado === 'aprobada');
             const regulares = todas.filter(m => m.estado === 'regular');
             const pendientes = todas.filter(m => m.estado === 'pendiente' && logicManager.canTakeCourse(m.id));
+            
             document.getElementById('aprobadas-count').textContent = aprobadas.length;
             document.getElementById('regulares-count').textContent = regulares.length;
             document.getElementById('pendientes-count').textContent = pendientes.length;
-            const notasValidas = aprobadas.map(m => m.nota).filter(n => typeof n === 'number' && n >= 4);
-            const promedio = notasValidas.length > 0 ? (notasValidas.reduce((a, b) => a + b, 0) / notasValidas.length).toFixed(2) : 'N/A';
-            document.getElementById('promedio-final').textContent = promedio;
-            const totalCarrera = logicManager.calculateTotalSubjects();
-            document.getElementById('materias-progreso').textContent = `${aprobadas.length}/${totalCarrera}`;
-        }
-    };
+            
+            // --- CÁLCULO DE PROMEDIOS ---
+            // 1. Promedio CON CBC
+            const notasValidasConCBC = aprobadas.map(m => m.nota).filter(n => typeof n === 'number' && n >= 4);
+            const promedioConCBC = notasValidasConCBC.length > 0 ? (notasValidasConCBC.reduce((a, b) => a + b, 0) / notasValidasConCBC.length).toFixed(2) : 'N/A';
+            document.getElementById('promedio-con-cbc').textContent = promedioConCBC;
 
-    // --- MÓDULO DE EVENTOS (CONTROLADOR) ---
-    const eventManager = {
-        init: () => {
-            planContainer.addEventListener('click', eventManager.handleCardClick);
-        },
-        // CORREGIDO: Lógica de clicks optimizada
-        handleCardClick: (e) => {
-            const card = e.target.closest('.materia-card');
-            if (!card || card.classList.contains('bloqueada') || card.classList.contains('placeholder')) return;
-
-            const id = card.dataset.id;
-            const materia = dataManager.getMateria(id);
-
-            if (materia.estado === 'pendiente') {
-                materia.estado = 'regular';
-            } else if (materia.estado === 'regular') {
-                if (cbcIds.includes(id)) {
-                    materia.estado = 'aprobada';
-                    materia.nota = null;
-                } else {
-                    const notaInput = prompt(`Ingresa la nota final para "${materia.nombre}":`);
-                    // Si el usuario presiona "Cancelar", notaInput es null
-                    if (notaInput === null) {
-                        materia.estado = 'pendiente'; // Vuelve a pendiente automáticamente
-                    } else {
-                        const notaNum = parseInt(notaInput);
-                        if (!isNaN(notaNum) && notaNum >= 1 && notaNum <= 10) {
-                            materia.nota = notaNum;
-                            materia.estado = notaNum >= 4 ? 'aprobada' : 'pendiente';
-                        } else if (notaInput !== "") { // Evita la alerta si solo se presiona OK sin escribir nada
-                            alert('Por favor, ingresa una nota válida (número del 1 al 10).');
-                        }
-                        // Si se presiona OK con el cuadro vacío, no hace nada y queda en Regular.
-                    }
-                }
-            } else if (materia.estado === 'aprobada') {
-                const accion = confirm(`"${materia.nombre}" está Aprobada (Nota: ${materia.nota || 'N/A'}).\n\n- OK para editar la nota.\n- Cancelar para volver a pendiente.`);
-                if (accion) {
-                    eventManager.promptForGrade(materia, true);
-                } else {
-                    materia.estado = 'pendiente';
-                    materia.nota = null;
-                }
-            }
-
-            dataManager.save();
-            viewManager.render();
-        },
-        promptForGrade: (materia, isEditing) => {
-            const notaInput = prompt(`Ingresa la nota para ${materia.nombre}:`, materia.nota || '');
-            if (notaInput === null) return;
-            const notaNum = parseInt(notaInput);
-            if (!isNaN(notaNum) && notaNum >= 1 && notaNum <= 10) {
-                materia.nota = notaNum;
-                if (!isEditing) { 
-                    materia.estado = notaNum >= 4 ? 'aprobada' : 'pendiente';
-                } else if (materia.nota < 4) {
-                     alert("Nota guardada. La materia sigue aprobada con el aplazo registrado.");
-                }
-            } else {
-                alert('Por favor, ingresa una nota válida (número del 1 al 10).');
-            }
-        }
-    };
-
-    // --- INICIO ---
-    dataManager.init();
-    viewManager.render();
-    eventManager.init();
-});
+            // 2. Promedio SIN CBC
+            const aprobadasSinCBC = aprobadas.filter(m => !cbcIds.includes(m.id));
+            const notasValidasSinCBC = aprobadasSinCBC.map(m => m.nota).filter(n
