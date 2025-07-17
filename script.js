@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Variables globales y constantes
     const planContainer = document.getElementById('plan-de-estudios');
+    const reiniciarBtn = document.getElementById('reiniciar-progreso');
     const cbcIds = ['ipc', 'icse', 'quimica_cbc', 'biofisica_cbc', 'biologia_cbc', 'matematica_cbc'];
     let materiasData = {};
 
@@ -25,6 +26,11 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         save: () => {
             localStorage.setItem('progresoTedeschi', JSON.stringify(materiasData));
+        },
+        clear: () => {
+            localStorage.removeItem('progresoTedeschi');
+            materiasData = {}; // Resetea el objeto en memoria
+            dataManager.init(); // Vuelve a inicializar desde cero
         },
         getMateria: (id) => materiasData[id],
         getAll: () => Object.values(materiasData),
@@ -73,12 +79,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const columnDiv = document.createElement('div');
                 columnDiv.className = 'ciclo-column';
                 columnDiv.id = `col-${ciclo.id}`;
-
                 const materiasContainer = document.createElement('div');
                 materiasContainer.className = (ciclo.id === 'rotaciones') ? 'rotaciones-container' : 'materias-container';
-                
                 columnDiv.innerHTML = `<h2>${ciclo.nombre}</h2>`;
-                
                 ciclo.materias.forEach(materiaInfo => {
                     const materia = dataManager.getMateria(materiaInfo.id);
                     const isBloqueada = !logicManager.canTakeCourse(materia.id);
@@ -109,6 +112,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     materiasContainer.appendChild(materiaCard);
                 });
+                if (ciclo.id === 'rotaciones') {
+                    const columnCount = 2;
+                    const itemsCount = ciclo.materias.length;
+                    const remainder = itemsCount % columnCount;
+                    if (remainder !== 0) {
+                        const placeholdersNeeded = columnCount - remainder;
+                        for (let i = 0; i < placeholdersNeeded; i++) {
+                            const placeholder = document.createElement('div');
+                            placeholder.className = 'materia-card placeholder';
+                            materiasContainer.appendChild(placeholder);
+                        }
+                    }
+                }
                 columnDiv.appendChild(materiasContainer);
                 planContainer.appendChild(columnDiv);
             });
@@ -134,22 +150,33 @@ document.addEventListener('DOMContentLoaded', () => {
     const eventManager = {
         init: () => {
             planContainer.addEventListener('click', eventManager.handleCardClick);
+            reiniciarBtn.addEventListener('click', eventManager.handleResetClick);
         },
         handleCardClick: (e) => {
             const card = e.target.closest('.materia-card');
-            if (!card || card.classList.contains('bloqueada')) return;
+            if (!card || card.classList.contains('bloqueada') || card.classList.contains('placeholder')) return;
 
             const id = card.dataset.id;
             const materia = dataManager.getMateria(id);
 
             if (materia.estado === 'pendiente') {
                 materia.estado = 'regular';
-            } else if (materia.estado === 'regular') {
+            } 
+            // CORREGIDO: Nueva lógica para el estado "Regular"
+            else if (materia.estado === 'regular') {
                 if (cbcIds.includes(id)) {
                     materia.estado = 'aprobada';
                     materia.nota = null;
                 } else {
-                    eventManager.promptForGrade(materia, false);
+                    const quierePonerNota = confirm(`¿Deseas ingresar la nota final para "${materia.nombre}"?`);
+                    if (quierePonerNota) {
+                        eventManager.promptForGrade(materia, false);
+                    } else {
+                        const quiereVolver = confirm(`¿Querés volver a marcarla como "Pendiente"?`);
+                        if (quiereVolver) {
+                            materia.estado = 'pendiente';
+                        }
+                    }
                 }
             } else if (materia.estado === 'aprobada') {
                 const accion = confirm(`"${materia.nombre}" está Aprobada (Nota: ${materia.nota || 'N/A'}).\n\n- OK para editar la nota.\n- Cancelar para volver a pendiente.`);
@@ -177,6 +204,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } else {
                 alert('Por favor, ingresa una nota válida (número del 1 al 10).');
+            }
+        },
+        handleResetClick: () => {
+            if (confirm("¿Estás seguro de que quieres borrar todo tu progreso? Esta acción no se puede deshacer.")) {
+                dataManager.clear();
+                viewManager.render();
             }
         }
     };
