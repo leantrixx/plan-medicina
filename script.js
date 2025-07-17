@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     materiasContainer.appendChild(materiaCard);
                 });
                 if (ciclo.id === 'rotaciones') {
-                    const columnCount = 2;
+                    const columnCount = 2; // Siempre 2 para la vista de PC
                     const itemsCount = ciclo.materias.length;
                     const remainder = itemsCount % columnCount;
                     if (remainder !== 0) {
@@ -134,12 +134,83 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('regulares-count').textContent = regulares.length;
             document.getElementById('pendientes-count').textContent = pendientes.length;
             
-            // --- CÁLCULO DE PROMEDIOS ---
-            // 1. Promedio CON CBC
             const notasValidasConCBC = aprobadas.map(m => m.nota).filter(n => typeof n === 'number' && n >= 4);
             const promedioConCBC = notasValidasConCBC.length > 0 ? (notasValidasConCBC.reduce((a, b) => a + b, 0) / notasValidasConCBC.length).toFixed(2) : 'N/A';
             document.getElementById('promedio-con-cbc').textContent = promedioConCBC;
 
-            // 2. Promedio SIN CBC
             const aprobadasSinCBC = aprobadas.filter(m => !cbcIds.includes(m.id));
-            const notasValidasSinCBC = aprobadasSinCBC.map(m => m.nota).filter(n
+            const notasValidasSinCBC = aprobadasSinCBC.map(m => m.nota).filter(n => typeof n === 'number' && n >= 4);
+            const promedioSinCBC = notasValidasSinCBC.length > 0 ? (notasValidasSinCBC.reduce((a, b) => a + b, 0) / notasValidasSinCBC.length).toFixed(2) : 'N/A';
+            document.getElementById('promedio-sin-cbc').textContent = promedioSinCBC;
+
+            const totalCarrera = logicManager.calculateTotalSubjects();
+            document.getElementById('materias-progreso').textContent = `${aprobadas.length}/${totalCarrera}`;
+        }
+    };
+
+    // --- MÓDULO DE EVENTOS (CONTROLADOR) ---
+    const eventManager = {
+        init: () => {
+            planContainer.addEventListener('click', eventManager.handleCardClick);
+        },
+        handleCardClick: (e) => {
+            const card = e.target.closest('.materia-card');
+            if (!card || card.classList.contains('bloqueada') || card.classList.contains('placeholder')) return;
+
+            const id = card.dataset.id;
+            const materia = dataManager.getMateria(id);
+
+            if (materia.estado === 'pendiente') {
+                materia.estado = 'regular';
+            } else if (materia.estado === 'regular') {
+                if (cbcIds.includes(id)) {
+                    materia.estado = 'aprobada';
+                    materia.nota = null;
+                } else {
+                    const notaInput = prompt(`Ingresa la nota final para "${materia.nombre}":`);
+                    if (notaInput === null) {
+                        materia.estado = 'pendiente';
+                    } else {
+                        const notaNum = parseInt(notaInput);
+                        if (!isNaN(notaNum) && notaNum >= 1 && notaNum <= 10) {
+                            materia.nota = notaNum;
+                            materia.estado = notaNum >= 4 ? 'aprobada' : 'pendiente';
+                        } else if (notaInput !== "") {
+                            alert('Por favor, ingresa una nota válida (número del 1 al 10).');
+                        }
+                    }
+                }
+            } else if (materia.estado === 'aprobada') {
+                const accion = confirm(`"${materia.nombre}" está Aprobada (Nota: ${materia.nota || 'N/A'}).\n\n- OK para editar la nota.\n- Cancelar para volver a pendiente.`);
+                if (accion) {
+                    eventManager.promptForGrade(materia, true);
+                } else {
+                    materia.estado = 'pendiente';
+                    materia.nota = null;
+                }
+            }
+            dataManager.save();
+            viewManager.render();
+        },
+        promptForGrade: (materia, isEditing) => {
+            const notaInput = prompt(`Ingresa la nota para ${materia.nombre}:`, materia.nota || '');
+            if (notaInput === null) return;
+            const notaNum = parseInt(notaInput);
+            if (!isNaN(notaNum) && notaNum >= 1 && notaNum <= 10) {
+                materia.nota = notaNum;
+                if (!isEditing) { 
+                    materia.estado = notaNum >= 4 ? 'aprobada' : 'pendiente';
+                } else if (materia.nota < 4) {
+                     alert("Nota guardada. La materia sigue aprobada con el aplazo registrado.");
+                }
+            } else {
+                alert('Por favor, ingresa una nota válida (número del 1 al 10).');
+            }
+        }
+    };
+
+    // --- INICIO ---
+    dataManager.init();
+    viewManager.render();
+    eventManager.init();
+});
