@@ -26,7 +26,6 @@ body {
     font-family: var(--font-primary);
     background-image: linear-gradient(to top right, var(--color-bg-start), var(--color-bg-end));
     color: var(--color-text-light);
-    /* El body ahora permite scroll en mobile */
 }
 
 .main-container {
@@ -59,13 +58,12 @@ h1 {
     background: rgba(0, 0, 0, 0.2);
     border-radius: 8px;
     margin-bottom: 1rem;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
 }
 
 /* --- ESTILOS POR DEFECTO (PARA CELULARES) --- */
 #plan-de-estudios {
     display: grid;
-    /* 1 sola columna por defecto para que se apilen */
     grid-template-columns: 1fr;
     gap: 1rem;
 }
@@ -84,7 +82,8 @@ h1 {
     text-transform: uppercase;
 }
 
-.materias-container, .rotaciones-container {
+/* CORREGIDO: .materias-container es flexbox, .rotaciones-container NO. */
+.materias-container {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -92,7 +91,7 @@ h1 {
 
 .materia-card {
     border-radius: 5px;
-    padding: 0.7rem 0.9rem; /* Padding más grande para tocar con el dedo */
+    padding: 0.7rem 0.9rem;
     font-weight: bold;
     font-size: 0.9rem;
     cursor: pointer;
@@ -100,13 +99,15 @@ h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    -webkit-column-break-inside: avoid;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    margin-bottom: 0.5rem; 
 }
 
 /* --- ESTILOS PARA PANTALLAS GRANDES (DESKTOP) --- */
-/* Se activa cuando la pantalla tiene 1024px de ancho o más */
 @media (min-width: 1024px) {
     body {
-        /* Vuelve a centrar todo en la pantalla sin scroll */
         display: flex;
         align-items: center;
         min-height: 100vh;
@@ -121,13 +122,11 @@ h1 {
         font-size: 1rem;
     }
     
-    /* Se activa el layout de grilla 4x2 */
     #plan-de-estudios {
         grid-template-columns: repeat(4, 1fr);
         grid-auto-rows: min-content; 
     }
 
-    /* Posicionamiento en la grilla para Desktop */
     #col-cbc { grid-area: 1 / 1; }
     #col-biomedico1 { grid-area: 1 / 2; } 
     #col-biomedico2 { grid-area: 1 / 3; }
@@ -137,6 +136,7 @@ h1 {
     #col-pfo { grid-area: 2 / 3; }
     #col-rotaciones { grid-area: 2 / 4; }
 
+    /* CORREGIDO: Se aplica el column-count solo para desktop */
     .rotaciones-container {
         column-count: 2;
         column-gap: 0.5rem;
@@ -161,6 +161,7 @@ h1 {
         cursor: default;
     }
 }
+
 
 .materia-card.pendiente:hover, .materia-card.regular:hover, .materia-card.aprobada:hover {
     background-position: 0 100%;
