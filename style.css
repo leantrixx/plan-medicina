@@ -42,7 +42,7 @@ body {
 h1 {
     font-family: var(--font-primary);
     font-weight: 700;
-    font-size: 3.2rem;
+    font-size: 2.5rem;
     text-align: center;
     letter-spacing: 1px;
     margin-bottom: 0.75rem;
@@ -53,8 +53,7 @@ h1 {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    /* CORREGIDO: Espaciado ajustado para que entren todos los items */
-    gap: 1.25rem; 
+    gap: 1.25rem;
     padding: 0.75rem;
     background: rgba(0, 0, 0, 0.2);
     border-radius: 8px;
@@ -62,106 +61,102 @@ h1 {
     font-size: 0.9rem;
 }
 
-/* --- ESTILOS PARA PC (EL DISEÑO QUE TE GUSTA) --- */
+/* --- ESTILOS POR DEFECTO (PARA CELULARES) --- */
 #plan-de-estudios {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-auto-rows: min-content; 
-    gap: 0.75rem;
+    grid-template-columns: 1fr;
+    gap: 1rem;
 }
 
 .ciclo-column {
     background: var(--color-column-bg);
     border-radius: 10px;
-    padding: 0.6rem;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    display: flex;
-    flex-direction: column;
+    padding: 0.8rem;
 }
-
-#col-cbc { grid-area: 1 / 1; }
-#col-biomedico1 { grid-area: 1 / 2; } 
-#col-biomedico2 { grid-area: 1 / 3; }
-#col-ciclo_clinico { grid-area: 1 / 4; }
-#col-clinicas { grid-area: 2 / 1; }
-#col-quirurgicas { grid-area: 2 / 2; }
-#col-pfo { grid-area: 2 / 3; }
-#col-rotaciones { grid-area: 2 / 4; }
 
 .ciclo-column h2 {
     font-family: var(--font-headings);
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     text-align: center;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
 }
 
 .materias-container {
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
+    gap: 0.5rem;
 }
 
 .rotaciones-container {
-    column-count: 2;
-    column-gap: 0.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 .materia-card {
-    border-radius: 4px;
-    padding: 0.4rem 0.6rem;
+    border-radius: 5px;
+    padding: 0.7rem 0.9rem;
     font-weight: bold;
-    font-size: 0.75rem;
+    font-size: 0.9rem;
     cursor: pointer;
     position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-image: linear-gradient(rgba(0,0,0,0), var(--color-materia-hover));
-    background-size: 100% 200%;
-    background-position: 0 0;
-    transition: background-position 0.3s ease;
     -webkit-column-break-inside: avoid;
     page-break-inside: avoid;
     break-inside: avoid;
-    margin-bottom: 0.3rem; 
+    margin-bottom: 0.4rem; 
 }
 
-
-/* --- ESTILOS QUE SE ACTIVAN SOLO EN PANTALLAS CHICAS (CELULARES) --- */
-@media (max-width: 1024px) {
+/* --- ESTILOS PARA PANTALLAS GRANDES (DESKTOP) --- */
+@media (min-width: 1024px) {
     body {
-        align-items: flex-start;
+        display: flex;
+        align-items: center;
+        min-height: 100vh;
     }
 
     h1 {
-        font-size: 2.2rem;
+        font-size: 3.2rem;
     }
 
-    #plan-de-estudios {
-        grid-template-columns: 1fr;
-    }
-
-    .ciclo-column {
-        grid-area: auto !important;
-        padding: 0.8rem;
+    #estadisticas {
+        gap: 1.5rem;
+        font-size: 1rem;
     }
     
-    .ciclo-column h2 {
-        font-size: 1.5rem;
+    #plan-de-estudios {
+        grid-template-columns: repeat(4, 1fr);
+        grid-auto-rows: min-content; 
     }
 
-    .materias-container, .rotaciones-container {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-        column-count: 1;
+    #col-cbc { grid-area: 1 / 1; }
+    #col-biomedico1 { grid-area: 1 / 2; } 
+    #col-biomedico2 { grid-area: 1 / 3; }
+    #col-ciclo_clinico { grid-area: 1 / 4; }
+    #col-clinicas { grid-area: 2 / 1; }
+    #col-quirurgicas { grid-area: 2 / 2; }
+    #col-pfo { grid-area: 2 / 3; }
+    #col-rotaciones { grid-area: 2 / 4; }
+
+    .rotaciones-container {
+        column-count: 2;
+        column-gap: 0.5rem;
     }
 
     .materia-card {
-        font-size: 0.9rem;
-        padding: 0.7rem;
+        padding: 0.4rem 0.6rem;
+        font-size: 0.75rem;
+        background-image: linear-gradient(rgba(0,0,0,0), var(--color-materia-hover));
+        background-size: 100% 200%;
+        background-position: 0 0;
+        transition: background-position 0.3s ease;
+    }
+    
+    .ciclo-column h2 {
+        font-size: 1.2rem;
     }
 }
 
