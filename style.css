@@ -26,6 +26,7 @@ body {
     font-family: var(--font-primary);
     background-image: linear-gradient(to top right, var(--color-bg-start), var(--color-bg-end));
     color: var(--color-text-light);
+    /* El body ahora permite scroll en mobile */
 }
 
 .main-container {
@@ -42,7 +43,7 @@ body {
 h1 {
     font-family: var(--font-primary);
     font-weight: 700;
-    font-size: 2rem; /* Tamaño de título más chico para mobile */
+    font-size: 2.5rem;
     text-align: center;
     letter-spacing: 1px;
     margin-bottom: 0.75rem;
@@ -58,13 +59,13 @@ h1 {
     background: rgba(0, 0, 0, 0.2);
     border-radius: 8px;
     margin-bottom: 1rem;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
 }
 
 /* --- ESTILOS POR DEFECTO (PARA CELULARES) --- */
 #plan-de-estudios {
     display: grid;
-    /* 1 sola columna por defecto */
+    /* 1 sola columna por defecto para que se apilen */
     grid-template-columns: 1fr;
     gap: 1rem;
 }
@@ -77,51 +78,38 @@ h1 {
 
 .ciclo-column h2 {
     font-family: var(--font-headings);
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     text-align: center;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
     text-transform: uppercase;
 }
 
-.materias-container {
+.materias-container, .rotaciones-container {
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
-}
-
-.rotaciones-container {
-    column-count: 2;
-    column-gap: 0.5rem;
+    gap: 0.5rem;
 }
 
 .materia-card {
-    border-radius: 4px;
-    padding: 0.6rem 0.8rem; /* Padding más generoso para tocar con el dedo */
+    border-radius: 5px;
+    padding: 0.7rem 0.9rem; /* Padding más grande para tocar con el dedo */
     font-weight: bold;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     cursor: pointer;
     position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-image: linear-gradient(rgba(0,0,0,0), var(--color-materia-hover));
-    background-size: 100% 200%;
-    background-position: 0 0;
-    transition: background-position 0.3s ease;
-    -webkit-column-break-inside: avoid;
-    page-break-inside: avoid;
-    break-inside: avoid;
-    margin-bottom: 0.4rem; 
 }
 
-/* --- ESTILOS PARA PANTALLAS GRANDES (TABLETS Y DESKTOP) --- */
+/* --- ESTILOS PARA PANTALLAS GRANDES (DESKTOP) --- */
 /* Se activa cuando la pantalla tiene 1024px de ancho o más */
 @media (min-width: 1024px) {
     body {
+        /* Vuelve a centrar todo en la pantalla sin scroll */
         display: flex;
         align-items: center;
         min-height: 100vh;
-        padding: 1rem;
     }
 
     h1 {
@@ -149,21 +137,29 @@ h1 {
     #col-pfo { grid-area: 2 / 3; }
     #col-rotaciones { grid-area: 2 / 4; }
 
+    .rotaciones-container {
+        column-count: 2;
+        column-gap: 0.5rem;
+    }
+
     .materia-card {
         padding: 0.5rem 0.7rem;
         font-size: 0.8rem;
+        background-image: linear-gradient(rgba(0,0,0,0), var(--color-materia-hover));
+        background-size: 100% 200%;
+        background-position: 0 0;
+        transition: background-position 0.3s ease;
     }
-
+    
     .ciclo-column h2 {
         font-size: 1.2rem;
     }
-}
 
-
-.materia-card.placeholder {
-    background: transparent;
-    box-shadow: none;
-    cursor: default;
+    .materia-card.placeholder {
+        background: transparent;
+        box-shadow: none;
+        cursor: default;
+    }
 }
 
 .materia-card.pendiente:hover, .materia-card.regular:hover, .materia-card.aprobada:hover {
