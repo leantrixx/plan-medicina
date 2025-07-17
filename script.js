@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Variables globales y constantes
     const planContainer = document.getElementById('plan-de-estudios');
-    const reiniciarBtn = document.getElementById('reiniciar-progreso');
     const cbcIds = ['ipc', 'icse', 'quimica_cbc', 'biofisica_cbc', 'biologia_cbc', 'matematica_cbc'];
     let materiasData = {};
 
@@ -26,11 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         save: () => {
             localStorage.setItem('progresoTedeschi', JSON.stringify(materiasData));
-        },
-        clear: () => {
-            localStorage.removeItem('progresoTedeschi');
-            materiasData = {}; // Resetea el objeto en memoria
-            dataManager.init(); // Vuelve a inicializar desde cero
         },
         getMateria: (id) => materiasData[id],
         getAll: () => Object.values(materiasData),
@@ -150,8 +144,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const eventManager = {
         init: () => {
             planContainer.addEventListener('click', eventManager.handleCardClick);
-            reiniciarBtn.addEventListener('click', eventManager.handleResetClick);
         },
+        // CORREGIDO: Lógica de clicks optimizada
         handleCardClick: (e) => {
             const card = e.target.closest('.materia-card');
             if (!card || card.classList.contains('bloqueada') || card.classList.contains('placeholder')) return;
@@ -161,21 +155,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (materia.estado === 'pendiente') {
                 materia.estado = 'regular';
-            } 
-            // CORREGIDO: Nueva lógica para el estado "Regular"
-            else if (materia.estado === 'regular') {
+            } else if (materia.estado === 'regular') {
                 if (cbcIds.includes(id)) {
                     materia.estado = 'aprobada';
                     materia.nota = null;
                 } else {
-                    const quierePonerNota = confirm(`¿Deseas ingresar la nota final para "${materia.nombre}"?`);
-                    if (quierePonerNota) {
-                        eventManager.promptForGrade(materia, false);
+                    const notaInput = prompt(`Ingresa la nota final para "${materia.nombre}":`);
+                    // Si el usuario presiona "Cancelar", notaInput es null
+                    if (notaInput === null) {
+                        materia.estado = 'pendiente'; // Vuelve a pendiente automáticamente
                     } else {
-                        const quiereVolver = confirm(`¿Querés volver a marcarla como "Pendiente"?`);
-                        if (quiereVolver) {
-                            materia.estado = 'pendiente';
+                        const notaNum = parseInt(notaInput);
+                        if (!isNaN(notaNum) && notaNum >= 1 && notaNum <= 10) {
+                            materia.nota = notaNum;
+                            materia.estado = notaNum >= 4 ? 'aprobada' : 'pendiente';
+                        } else if (notaInput !== "") { // Evita la alerta si solo se presiona OK sin escribir nada
+                            alert('Por favor, ingresa una nota válida (número del 1 al 10).');
                         }
+                        // Si se presiona OK con el cuadro vacío, no hace nada y queda en Regular.
                     }
                 }
             } else if (materia.estado === 'aprobada') {
@@ -204,12 +201,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } else {
                 alert('Por favor, ingresa una nota válida (número del 1 al 10).');
-            }
-        },
-        handleResetClick: () => {
-            if (confirm("¿Estás seguro de que quieres borrar todo tu progreso? Esta acción no se puede deshacer.")) {
-                dataManager.clear();
-                viewManager.render();
             }
         }
     };
