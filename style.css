@@ -31,17 +31,13 @@ body {
 .main-container {
     width: 100%;
     max-width: 1300px; 
-    margin: 1rem auto; /* Permite scroll en mobile */
+    margin: 1rem auto;
     background: var(--color-container-bg);
     border-radius: 15px;
     padding: 1rem;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(5px);
 }
-
-/* =============================================================== */
-/* --- ESTILOS PARA PC (BASADO EN EL CÓDIGO QUE FUNCIONABA) --- */
-/* =============================================================== */
 
 h1 {
     font-family: var(--font-primary);
@@ -57,14 +53,16 @@ h1 {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 1.5rem;
-    padding: 0.5rem;
+    /* CORREGIDO: Espaciado ajustado para que entren todos los items */
+    gap: 1.25rem; 
+    padding: 0.75rem;
     background: rgba(0, 0, 0, 0.2);
     border-radius: 8px;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
     font-size: 0.9rem;
 }
 
+/* --- ESTILOS PARA PC (EL DISEÑO QUE TE GUSTA) --- */
 #plan-de-estudios {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -131,9 +129,7 @@ h1 {
 }
 
 
-/* ==================================================================== */
 /* --- ESTILOS QUE SE ACTIVAN SOLO EN PANTALLAS CHICAS (CELULARES) --- */
-/* ==================================================================== */
 @media (max-width: 1024px) {
     body {
         align-items: flex-start;
@@ -142,14 +138,12 @@ h1 {
     h1 {
         font-size: 2.2rem;
     }
-    
+
     #plan-de-estudios {
-        /* Se vuelve a una sola columna */
         grid-template-columns: 1fr;
     }
 
     .ciclo-column {
-        /* Se resetea la posición de cada columna para que se apilen naturalmente */
         grid-area: auto !important;
         padding: 0.8rem;
     }
@@ -162,17 +156,15 @@ h1 {
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
-        column-count: 1; /* Rotaciones en una sola columna para leer mejor */
+        column-count: 1;
     }
 
     .materia-card {
-        font-size: 0.9rem; /* Letra más grande para leer en celu */
+        font-size: 0.9rem;
         padding: 0.7rem;
     }
 }
 
-
-/* --- Estilos comunes que no necesitan cambiar --- */
 
 .materia-card.placeholder {
     background: transparent;
