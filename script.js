@@ -73,9 +73,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const columnDiv = document.createElement('div');
                 columnDiv.className = 'ciclo-column';
                 columnDiv.id = `col-${ciclo.id}`;
+
                 const materiasContainer = document.createElement('div');
                 materiasContainer.className = (ciclo.id === 'rotaciones') ? 'rotaciones-container' : 'materias-container';
+                
                 columnDiv.innerHTML = `<h2>${ciclo.nombre}</h2>`;
+                
                 ciclo.materias.forEach(materiaInfo => {
                     const materia = dataManager.getMateria(materiaInfo.id);
                     const isBloqueada = !logicManager.canTakeCourse(materia.id);
@@ -106,19 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     materiasContainer.appendChild(materiaCard);
                 });
-                if (ciclo.id === 'rotaciones') {
-                    const columnCount = 2; // Siempre 2 para la vista de PC
-                    const itemsCount = ciclo.materias.length;
-                    const remainder = itemsCount % columnCount;
-                    if (remainder !== 0) {
-                        const placeholdersNeeded = columnCount - remainder;
-                        for (let i = 0; i < placeholdersNeeded; i++) {
-                            const placeholder = document.createElement('div');
-                            placeholder.className = 'materia-card placeholder';
-                            materiasContainer.appendChild(placeholder);
-                        }
-                    }
-                }
                 columnDiv.appendChild(materiasContainer);
                 planContainer.appendChild(columnDiv);
             });
@@ -129,21 +119,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const aprobadas = todas.filter(m => m.estado === 'aprobada');
             const regulares = todas.filter(m => m.estado === 'regular');
             const pendientes = todas.filter(m => m.estado === 'pendiente' && logicManager.canTakeCourse(m.id));
-            
             document.getElementById('aprobadas-count').textContent = aprobadas.length;
             document.getElementById('regulares-count').textContent = regulares.length;
             document.getElementById('pendientes-count').textContent = pendientes.length;
-            
-            const notasValidasConCBC = aprobadas.map(m => m.nota).filter(n => typeof n === 'number' && n >= 4);
-            const promedioConCBC = notasValidasConCBC.length > 0 ? (notasValidasConCBC.reduce((a, b) => a + b, 0) / notasValidasConCBC.length).toFixed(2) : 'N/A';
-            document.getElementById('promedio-con-cbc').textContent = promedioConCBC;
-
-            const aprobadasSinCBC = aprobadas.filter(m => !cbcIds.includes(m.id));
-            const notasValidasSinCBC = aprobadasSinCBC.map(m => m.nota).filter(n => typeof n === 'number' && n >= 4);
-            const promedioSinCBC = notasValidasSinCBC.length > 0 ? (notasValidasSinCBC.reduce((a, b) => a + b, 0) / notasValidasSinCBC.length).toFixed(2) : 'N/A';
-            document.getElementById('promedio-sin-cbc').textContent = promedioSinCBC;
-
-            const totalCarrera = logicManager.calculateTotalSubjects();
+            const notasValidas = aprobadas.map(m => m.nota).filter(n => typeof n === 'number' && n >= 4);
+            const promedio = notasValidas.length > 0 ? (notasValidas.reduce((a, b) => a + b, 0) / notasValidas.length).toFixed(2) : 'N/A';
+            document.getElementById('promedio-final').textContent = promedio;
+            // Promedio sin CBC
+            const aprobadasSinCbc = aprobadas.filter(m => !cbcIds.includes(m.id));
+            const notasSinCbc = aprobadasSinCbc.map(m => m.nota).filter(n => typeof n === 'number' && n >= 4);
+            const promedioSinCbc = notasSinCbc.length > 0 ? (notasSinCbc.reduce((a,b)=>a+b,0) / notasSinCbc.length).toFixed(2) : 'N/A';
+            const nodoSinCbc = document.getElementById('promedio-sin-cbc');
+            if(nodoSinCbc){ nodoSinCbc.textContent = promedioSinCbc; }const totalCarrera = logicManager.calculateTotalSubjects();
             document.getElementById('materias-progreso').textContent = `${aprobadas.length}/${totalCarrera}`;
         }
     };
@@ -155,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         handleCardClick: (e) => {
             const card = e.target.closest('.materia-card');
-            if (!card || card.classList.contains('bloqueada') || card.classList.contains('placeholder')) return;
+            if (!card || card.classList.contains('bloqueada')) return;
 
             const id = card.dataset.id;
             const materia = dataManager.getMateria(id);
@@ -167,18 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     materia.estado = 'aprobada';
                     materia.nota = null;
                 } else {
-                    const notaInput = prompt(`Ingresa la nota final para "${materia.nombre}":`);
-                    if (notaInput === null) {
-                        materia.estado = 'pendiente';
-                    } else {
-                        const notaNum = parseInt(notaInput);
-                        if (!isNaN(notaNum) && notaNum >= 1 && notaNum <= 10) {
-                            materia.nota = notaNum;
-                            materia.estado = notaNum >= 4 ? 'aprobada' : 'pendiente';
-                        } else if (notaInput !== "") {
-                            alert('Por favor, ingresa una nota válida (número del 1 al 10).');
-                        }
-                    }
+                    eventManager.promptForGrade(materia, false);
                 }
             } else if (materia.estado === 'aprobada') {
                 const accion = confirm(`"${materia.nombre}" está Aprobada (Nota: ${materia.nota || 'N/A'}).\n\n- OK para editar la nota.\n- Cancelar para volver a pendiente.`);
@@ -189,6 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     materia.nota = null;
                 }
             }
+
             dataManager.save();
             viewManager.render();
         },
