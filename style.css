@@ -1,244 +1,509 @@
 :root {
-    --color-bg-start: #004d40;
-    --color-bg-end: #00796b;
-    --color-text-light: #e0f2f1;
-    --color-container-bg: rgba(0, 0, 0, 0.2);
-    --color-column-bg: rgba(0, 0, 0, 0.25);
-    
-    --color-materia-bloqueada-bg: #37474F;
-    --color-materia-pendiente-bg: #006064;
-    --color-materia-pendiente-text: #ffffff;
-    --color-materia-regular-bg: #FF8F00;
-    --color-materia-aprobada-bg: #2E7D32;
-    --color-materia-hover: rgba(0, 0, 0, 0.15);
-    
-    --font-primary: 'Roboto', sans-serif;
-    --font-headings: 'Bebas Neue', cursive;
+  /* ======= PALETA ======= */
+  /* Fondo: oscuro sofisticado con leve gradiente */
+  --bg-1: #0a0f14;
+  --bg-2: #0e141b;
+
+  /* Acents: verde petróleo (ajustá este si querés otro matiz) */
+  --accent: #0f4c4c;               /* petróleo principal */
+  --accent-600: #0c3e3e;           /* más oscuro para hover */
+  --accent-300: #2d7a7a;           /* claro para resaltes */
+
+  /* Texto */
+  --text-1: #e8eef4;               /* principal */
+  --text-2: #a8b4c0;               /* secundario */
+
+  /* Contenedores & bordes */
+  --elev-1: rgba(255,255,255,0.04);
+  --elev-2: rgba(255,255,255,0.06);
+  --stroke-1: rgba(255,255,255,0.10);
+  --stroke-2: rgba(255,255,255,0.16);
+  --blur: blur(8px);
+
+  /* Estados (desaturados + consistentes en modo oscuro) */
+  --state-bloq: #2b3945;
+  --state-pend: #1b3a3a;           /* pend con tinte petróleo */
+  --state-reg:  #9b6a26;           /* regular ámbar sobrio */
+  --state-apr: rgba(0, 150, 90, 0.25);           /* aprobada verde profundo */
+
+  /* Hover overlay sutil */
+  --hover: rgba(255,255,255,0.06);
+
+  /* Tipografías (se mantienen, pero más pulidas) */
+  --font-primary: 'Roboto', system-ui, -apple-system, Segoe UI, sans-serif;
+  --font-headings: 'Bebas Neue', ui-sans-serif, system-ui, sans-serif;
 }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+/* ======= RESET BÁSICO ======= */
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* ======= BODY ======= */
 body {
-    font-family: var(--font-primary);
-    background-image: linear-gradient(to top right, var(--color-bg-start), var(--color-bg-end));
-    color: var(--color-text-light);
+  font-family: var(--font-primary);
+  color: var(--text-1);
+  min-height: 100vh;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Gradiente sofisticado (oscuro, diagonal) */
+  background: radial-gradient(1200px 800px at 20% 10%, var(--bg-2), transparent 60%),
+              radial-gradient(1000px 700px at 90% 90%, #091117, transparent 50%),
+              linear-gradient(135deg, var(--bg-1), #0b1117);
 }
 
+/* ======= CONTENEDOR PRINCIPAL ======= */
 .main-container {
-    width: 100%;
-    max-width: 1300px; 
-    margin: 1rem auto;
-    background: var(--color-container-bg);
-    border-radius: 15px;
-    padding: 1rem;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(5px);
+  width: 100%;
+  max-width: 1300px; /* se respeta tu ancho */
+  background: linear-gradient(180deg, var(--elev-2), var(--elev-1));
+  border: 1px solid var(--stroke-1);
+  border-radius: 16px; /* un toque más suave */
+  padding: 1rem;       /* idéntico al tuyo */
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  backdrop-filter: var(--blur);
 }
 
+/* ======= TÍTULO ======= */
 h1 {
-    font-family: var(--font-primary);
-    font-weight: 700;
-    font-size: 2.5rem;
-    text-align: center;
-    letter-spacing: 1px;
-    margin-bottom: 0.75rem;
-    color: #ffffff;
+  font-family: var(--font-primary);
+  font-weight: 700;
+  font-size: 3.2rem;    /* mismo tamaño */
+  text-align: center;
+  letter-spacing: 0.5px; /* más finito, más “pulido” */
+  margin-bottom: 0.75rem;
+  color: var(--text-1);
+  position: relative;
 }
 
+/* Subrayado/acento minimal (sin cambiar alturas) */
+h1::after {
+  content: "";
+  display: block;
+  width: 140px;
+  height: 2px;
+  margin: 10px auto 0;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0.85;
+}
+
+/* ======= STATS ======= */
 #estadisticas {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1.25rem;
-    padding: 0.75rem;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    margin-bottom: 1.5rem;
-    font-size: 0.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;           /* se respeta */
+  padding: 0.5rem;       /* se respeta */
+  background: linear-gradient(180deg, var(--elev-2), var(--elev-1));
+  border: 1px solid var(--stroke-1);
+  border-radius: 12px;   /* leve ajuste visual */
+  margin-bottom: 1rem;   /* se respeta */
+  font-size: 0.9rem;     /* se respeta */
 }
 
-/* --- ESTILOS POR DEFECTO (PARA CELULARES) --- */
+.stat-item {
+  color: var(--text-2);
+}
+
+.stat-item span {
+  color: var(--text-1);
+  padding: 0 6px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--stroke-1);
+}
+
+/* ======= GRID (SE MANTIENE) ======= */
 #plan-de-estudios {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* igual */
+  grid-auto-rows: min-content;
+  gap: 0.75rem;                           /* igual */
 }
 
+/* ======= COLUMNAS ======= */
 .ciclo-column {
-    background: var(--color-column-bg);
-    border-radius: 10px;
-    padding: 0.8rem;
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  border: 1px solid var(--stroke-1);
+  border-radius: 12px;
+  padding: 0.6rem;    /* igual */
+  box-shadow: 0 5px 15px rgba(0,0,0,0.25);
+  display: flex;
+  flex-direction: column;
 }
 
+#col-cbc { grid-area: 1 / 1; }
+#col-biomedico1 { grid-area: 1 / 2; }
+#col-biomedico2 { grid-area: 1 / 3; }
+#col-ciclo_clinico { grid-area: 1 / 4; }
+
+#col-clinicas { grid-area: 2 / 1; }
+#col-quirurgicas { grid-area: 2 / 2; }
+#col-pfo { grid-area: 2 / 3; }
+#col-rotaciones { grid-area: 2 / 4; }
+
+/* ======= TÍTULOS DE COLUMNA ======= */
 .ciclo-column h2 {
-    font-family: var(--font-headings);
-    font-size: 1.5rem;
-    text-align: center;
-    margin-bottom: 0.75rem;
-    text-transform: uppercase;
+  font-family: var(--font-headings); /* se mantiene Bebas Neue */
+  font-size: 1.2rem;  /* igual */
+  text-align: center;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px; /* un pelín más “premium” */
+  color: var(--text-1);
+  padding: 0.15rem 0;
+  border-bottom: 1px dashed var(--stroke-2);
+  opacity: 0.95;
+
+  font-variant-numeric: lining-nums; /* ensure '1' same height as letters */
+  font-feature-settings: 'lnum' 1;
 }
 
-.materias-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
+/* ======= CONTENEDORES DE MATERIAS ======= */
+.materias-container { display: flex; flex-direction: column; gap: 0.3rem; }
 
-.rotaciones-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
+/* Rotaciones: se respeta el layout en 2 columnas internas */
+.rotaciones-container { column-count: 2; column-gap: 0.4rem; }
 
+/* ======= CARDS ======= */
 .materia-card {
-    border-radius: 5px;
-    padding: 0.7rem 0.9rem;
-    font-weight: bold;
-    font-size: 0.9rem;
-    cursor: pointer;
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    -webkit-column-break-inside: avoid;
-    page-break-inside: avoid;
-    break-inside: avoid;
-    margin-bottom: 0.4rem; 
+  border-radius: 8px;             /* más premium */
+  padding: 0.4rem 0.6rem;         /* igual */
+  font-weight: 600;               /* un poco más firme */
+  font-size: 0.75rem;             /* igual */
+  cursor: pointer;
+  position: relative;
+  display: flex; justify-content: space-between; align-items: center;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+  border: 1px solid var(--stroke-1);
+  transition: transform 120ms ease, border-color 180ms ease, background 180ms ease;
+  -webkit-column-break-inside: avoid; page-break-inside: avoid; break-inside: avoid;
+  margin-bottom: 0.3rem;          /* igual */
 }
 
-/* --- ESTILOS PARA PANTALLAS GRANDES (DESKTOP) --- */
-@media (min-width: 1024px) {
-    body {
-        display: flex;
-        align-items: center;
-        min-height: 100vh;
-    }
+/* Placeholder sigue igual si existiera */
+.materia-card.placeholder { background: transparent; box-shadow: none; cursor: default; }
 
-    h1 {
-        font-size: 3.2rem;
-    }
-
-    #estadisticas {
-        gap: 1.5rem;
-        font-size: 1rem;
-    }
-    
-    #plan-de-estudios {
-        grid-template-columns: repeat(4, 1fr);
-        grid-auto-rows: min-content; 
-    }
-
-    #col-cbc { grid-area: 1 / 1; }
-    #col-biomedico1 { grid-area: 1 / 2; } 
-    #col-biomedico2 { grid-area: 1 / 3; }
-    #col-ciclo_clinico { grid-area: 1 / 4; }
-    #col-clinicas { grid-area: 2 / 1; }
-    #col-quirurgicas { grid-area: 2 / 2; }
-    #col-pfo { grid-area: 2 / 3; }
-    #col-rotaciones { grid-area: 2 / 4; }
-
-    .rotaciones-container {
-        column-count: 2;
-        column-gap: 0.5rem;
-    }
-
-    .materia-card {
-        padding: 0.4rem 0.6rem;
-        font-size: 0.75rem;
-        background-image: linear-gradient(rgba(0,0,0,0), var(--color-materia-hover));
-        background-size: 100% 200%;
-        background-position: 0 0;
-        transition: background-position 0.3s ease;
-    }
-    
-    .ciclo-column h2 {
-        font-size: 1.2rem;
-    }
+/* Hover sutil y consistente en todos los estados */
+.materia-card:hover {
+  background: linear-gradient(180deg, var(--hover), transparent);
+  border-color: var(--stroke-2);
+  transform: translateY(-1px);
 }
 
-
-.materia-card.placeholder {
-    background: transparent;
-    box-shadow: none;
-    cursor: default;
-}
-
-.materia-card.pendiente:hover, .materia-card.regular:hover, .materia-card.aprobada:hover {
-    background-position: 0 100%;
-}
-
+/* Nota “píldora” más prolija */
 .materia-nota {
-    font-size: 0.7rem;
-    background-color: rgba(0,0,0,0.4);
-    color: white;
-    padding: 1px 5px;
-    border-radius: 4px;
-    margin-left: 6px;
+  font-size: 1rem;              /* igual */
+  color: var(--text-1);
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-left: 8px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--stroke-1);
 }
 
+/* ======= ESTADOS ======= */
 .materia-card.bloqueada {
-    background-color: var(--color-materia-bloqueada-bg);
+  background-color: var(--state-bloq);
+  color: var(--text-2);
 }
 
 .materia-card.pendiente {
-    background-color: var(--color-materia-pendiente-bg);
-    color: var(--color-materia-pendiente-text);
+  background-color: var(--state-pend);
+  color: var(--text-1);
 }
 
 .materia-card.regular {
-    background-color: var(--color-materia-regular-bg);
-    color: white;
+  background-color: var(--state-reg);
+  color: #fff;
 }
 
 .materia-card.aprobada {
-    background-color: var(--color-materia-aprobada-bg);
-    color: white;
+  background-color: #eafff1;
+  color: #eafff7;
 }
 
-.tooltip {
-    position: relative;
-}
+/* ======= TOOLTIP ======= */
+.tooltip { position: relative; }
 
 .tooltip .tooltip-text {
-    visibility: hidden;
-    opacity: 0;
-    width: 220px;
-    background-color: #212121;
-    color: #fff;
-    text-align: left;
-    border-radius: 6px;
-    padding: 8px;
-    position: absolute;
-    z-index: 10;
-    bottom: 125%;
-    left: 50%;
-    margin-left: -110px;
-    transition: opacity 0.3s;
-    pointer-events: none;
+  visibility: hidden; opacity: 0;
+  width: 240px;                    /* +20px para respiración */
+  background: linear-gradient(180deg, #0f1216, #0b0f13);
+  color: var(--text-1);
+  text-align: left;
+  border-radius: 10px;
+  padding: 10px 12px;
+  position: absolute; z-index: 10;
+  bottom: 125%; left: 50%; margin-left: -120px;
+  transition: opacity 180ms ease;
+  pointer-events: none;
+  border: 1px solid var(--stroke-2);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.45);
 }
 
 .tooltip .tooltip-text::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: #212121 transparent transparent transparent;
+  content: "";
+  position: absolute; top: 100%; left: 50%; margin-left: -6px;
+  border-width: 6px; border-style: solid;
+  border-color: var(--stroke-2) transparent transparent transparent;
+  filter: drop-shadow(0 -1px 0 var(--stroke-2));
 }
 
-.materia-card.bloqueada:hover .tooltip-text {
-    visibility: visible;
-    opacity: 1;
+.materia-card.bloqueada:hover .tooltip-text { visibility: visible; opacity: 1; }
+.tooltip-text ul { list-style-position: inside; padding-left: 5px; margin: 0; color: var(--text-2); }
+.tooltip-text strong { color: var(--text-1); }
+
+/* ======= ACCENT DETAILS ======= */
+.ciclo-column h2::selection,
+h1::selection,
+.materia-card::selection { background: var(--accent-300); color: #fff; }
+
+a { color: var(--accent-300); text-decoration: none; }
+a:hover { color: var(--accent); }
+
+/* ======= FOCUS ACCESSIBLE ======= */
+.materia-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-color: var(--accent);
 }
 
-.tooltip-text ul {
-    list-style-position: inside;
-    padding-left: 5px;
-    margin: 0;
+/* ======= MEDIA (se respeta tu comportamiento responsive de columnas apiladas) ======= */
+@media (max-width: 1024px) {
+  #plan-de-estudios { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px) {
+  #plan-de-estudios { grid-template-columns: 1fr; }
+  .rotaciones-container { column-count: 1; }
+}
+
+
+
+/* === Refinements: darker bg, new title font, underline glow, cleaner stats === */
+:root{
+  --emerald-900:#0b2121;   /* darker */
+  --emerald-950:#081718;
+  --gold:#d4af37;
+  --gold-12:rgba(212,175,55,.12);
+  --gold-18:rgba(212,175,55,.18);
+  --ink:#e9e5d6;
+}
+
+html,body{
+  background: radial-gradient(900px 600px at 15% 0%, rgba(212,175,55,.03), transparent 60%),
+              linear-gradient(180deg,var(--emerald-900),var(--emerald-950)) !important;
+  color: var(--ink) !important;
+  font-family: 'Inter', system-ui, sans-serif !important;
+}
+
+/* Title styling */
+h1{
+  font-family:'Cormorant Garamond', serif !important;
+  font-weight:700 !important;
+  letter-spacing:.6px !important;
+  color:var(--gold) !important;
+  margin-bottom:.3rem !important;
+}
+h1::after{
+  content:''; display:block; width:220px; height:2px; margin:.55rem auto 0;
+  background:linear-gradient(90deg, transparent, var(--gold), transparent);
+  box-shadow:0 0 12px var(--gold-12);
+  border-radius:999px;
+}
+
+/* Column titles use new serif too */
+.ciclo-column h2{
+  font-family:'Cormorant Garamond', serif !important;
+  letter-spacing:.5px !important;
+
+  font-variant-numeric: lining-nums; /* ensure '1' same height as letters */
+  font-feature-settings: 'lnum' 1;
+}
+
+/* Stats row cleanup */
+#estadisticas{
+  background:transparent !important;
+  border:1px solid var(--gold-12) !important;
+  box-shadow:none !important;
+}
+#estadisticas .stat-item{ color:#cbbf95 !important; }
+#estadisticas .stat-item span{
+  background:transparent !important;
+  border:none !important;
+  color:var(--gold) !important;
+  font-weight:800 !important;
+  font-size:1.05rem !important;   /* bigger numbers */
+  padding:0 .2rem !important;
+}
+
+/* Subject numbers/grade tokens as clean text */
+.materia-nota{
+  background:transparent !important;
+  border:0 !important;
+  color:var(--gold) !important;
+  padding:0 !important;
+  font-weight:700 !important;
+}
+
+/* Panels and lines keep thin gold borders */
+.ciclo-column{
+  background:transparent !important;
+  border:1px solid var(--gold-12) !important;
+  box-shadow:none !important;
+}
+.materia-card{
+  background:transparent !important;
+  border:0 !important;
+  border-bottom:1px solid var(--gold-12) !important;
+}
+.materia-card:hover{ background:rgba(212,175,55,.05) !important; }
+
+
+
+/* === Tweaks as requested (keep layout, minimal visual changes) === */
+
+/* 1) Remove big outer panel */
+.main-container{
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* 2) Hairline gold borders & dividers (very subtle) */
+.ciclo-column{
+  border-color: rgba(212,175,55,0.16) !important;
+}
+.ciclo-column h2{
+  border-bottom: 1px solid rgba(212,175,55,0.16) !important;
+
+  font-variant-numeric: lining-nums; /* ensure '1' same height as letters */
+  font-feature-settings: 'lnum' 1;
+}
+.materia-card{
+  border-bottom: 1px solid rgba(212,175,55,0.10) !important;
+}
+
+/* 3) Bigger subject numbers (grades) and cleaner look */
+.materia-nota{
+  font-size: 1rem !important;
+  font-weight: 800 !important;
+  color: #d4af37 !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin-left: .5rem !important;
+}
+
+/* 4) State color tints + left accent line */
+.materia-card.regular{
+  background: rgba(244,162,97,0.08) !important;
+  color: #f4a261 !important;
+  position: relative;
+}
+.materia-card.regular::before{
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: linear-gradient(180deg, rgba(244,162,97,.7), rgba(244,162,97,.25));
+  border-top-left-radius: 8px; border-bottom-left-radius: 8px;
+}
+
+.materia-card.aprobada{
+  background: rgba(0,150,90,0.06);
+  color: #eafff1;
+  position: relative;
+}
+.materia-card.aprobada::before{
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: linear-gradient(180deg, rgba(0,150,90,.85), rgba(0,150,90,.35)), rgba(42,157,143,.25));
+  border-top-left-radius: 8px; border-bottom-left-radius: 8px;
+}
+
+/* 5) Stats numbers bigger, no pill bg */
+#estadisticas .stat-item span{
+  background: transparent !important;
+  border: none !important;
+  font-size: 1.12rem !important;
+  font-weight: 800 !important;
+  color: #d4af37 !important;
+}
+
+
+
+/* === Click flow & visual tweaks === */
+/* Brighter approved state for better contrast */
+.materia-card.aprobada{
+  background: rgba(0,150,90,0.06); /* lighter teal */
+  color: #eafff1;
+  position: relative;
+}
+.materia-card.aprobada::before{
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: linear-gradient(180deg, rgba(0,150,90,.85), rgba(0,150,90,.35)), rgba(78,193,166,.35));
+  border-top-left-radius: 8px; border-bottom-left-radius: 8px;
+}
+
+
+/* === Diferenciación de estados === */
+
+/* Aprobada */
+.materia-card.aprobada{
+  background: rgba(0,150,90,0.06) !important;
+  color: #e9fff3 !important;
+}
+.materia-card.aprobada::before{
+  content:''; position:absolute; left:0; top:0; bottom:0; width:3px;
+  background: linear-gradient(180deg, rgba(0,150,90,.9), rgba(0,150,90,.35));
+  border-top-left-radius:8px; border-bottom-left-radius:8px;
+}
+
+/* Regular */
+.materia-card.regular{
+  background: rgba(244,162,97,0.05) !important;
+  color:#f4a261 !important;
+}
+.materia-card.regular::before{
+  content:''; position:absolute; left:0; top:0; bottom:0; width:3px;
+  background: linear-gradient(180deg, rgba(244,162,97,.9), rgba(244,162,97,.35));
+  border-top-left-radius:8px; border-bottom-left-radius:8px;
+}
+
+/* Pendiente */
+.materia-card.pendiente{ background: transparent !important; }
+
+/* Bloqueada */
+.materia-card.bloqueada{
+  opacity:.75 !important;
+  filter: grayscale(.2);
+  cursor:not-allowed;
+}
+.materia-card.bloqueada:hover{ background: inherit !important; }
+
+
+/* === Option-specific overrides === */
+
+/* Opción 1 — Aprobada con texto/borde dorado y fondo oscuro translúcido */
+.materia-card.aprobada{
+  background: rgba(0, 0, 0, 0.28) !important;   /* fondo más oscuro para no chocar con el tema */
+  color: #d4af37 !important;                    /* texto dorado */
+  position: relative;
+  border-bottom: 1px solid rgba(212,175,55,0.28) !important;
+}
+.materia-card.aprobada::before{
+  content:''; position:absolute; left:0; top:0; bottom:0; width:3px;
+  background: linear-gradient(180deg, rgba(212,175,55,.95), rgba(212,175,55,.45));
+  border-top-left-radius:8px; border-bottom-left-radius:8px;
+}
+
+
+/* === FINAL OVERRIDE: Regular with dark background and lighter green accent === */
+.materia-card.regular{
+  background: rgba(0,0,0,0.28) !important;      /* dark panel like approved */
+  color: #3cb179 !important;                     /* lighter elegant green */
+  position: relative;
+}
+.materia-card.regular::before{
+  content:''; position:absolute; left:0; top:0; bottom:0; width:3px;
+  background: linear-gradient(180deg, #3cb179, #2c8f65) !important;
+  border-top-left-radius:8px; border-bottom-left-radius:8px;
 }
